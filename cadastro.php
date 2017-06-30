@@ -41,7 +41,7 @@
 		$mail->SMTPAuth = true;
 		$mail->CharSet = 'UTF-8';
 		$mail->Username = '1uvr3z@gmail.com';
-		$mail->Password = 'aamu02aamu02';
+		$mail->Password = '';
 		$mail->SMTPSecure = 'tls';
 		$mail->Port = 587;
 		$mail->setFrom('1uvr3z@gmail.com', 'Confirmação de cadastro');
