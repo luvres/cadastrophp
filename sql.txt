@@ -44,53 +44,33 @@ docker exec -ti Postgres bash -c "psql -U postgres"
 
 SELECT datname FROM pg_database;
 
-DROP DATABASE IF EXISTS dbzone;
-CREATE DATABASE dbzone;
-\c dbzone
+DROP DATABASE IF EXISTS db_usuarios;
+CREATE DATABASE db_usuarios;
+\c db_usuarios
 
-DROP TABLE IF EXISTS usuarios;
-CREATE TABLE usuarios (
+DROP TABLE IF EXISTS hash_confirmacao;
+CREATE TABLE hash_confirmacao (
   id SERIAL PRIMARY KEY NOT NULL,
-  tipo INT NOT NULL,
-  nome VARCHAR(45) NOT NULL,
-  login VARCHAR(45) UNIQUE NOT NULL,
-  senha CHAR(40) NOT NULL
+  hash VARCHAR(255) NOT NULL,
+  status INT NOT NULL,
+  id_usuario INT NOT NULL,
+  data_cadastro DATE NOT NULL
 );
 
-\d usuarios;
+\d hash_confirmacao;
+SELECT * FROM hash_confirmacao;
 
-INSERT INTO usuarios(tipo, nome, login, senha) VALUES ('1', 'Administrador', 'admin', '40bd001563085fc35165329ea1ff5c5ecbdbbeef');
-SELECT * FROM usuarios;
+CREATE TABLE usuario (
+  id SERIAL PRIMARY KEY NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  login VARCHAR(20) UNIQUE NOT NULL,
+  senha VARCHAR(50) NOT NULL,
+  status INT NOT NULL,
+  data_cadastro DATE NOT NULL
+);
 
-
-# OracleXE
-#----------
-docker run --name OracleXE -h oraclexe \
--p 1521:1521 \
--d izone/oracle
-
-docker logs -f OracleXE
-
-docker exec -ti OracleXE sqlplus sys/oracle as sysdba
-
-
-# SQLServer
-#-----------
-docker run --name SQLServer -h sqlserver \
--e 'ACCEPT_EULA=Y' \
--e 'SA_PASSWORD=AAmu02+aamu02' \
--p 1433:1433 \
--d microsoft/mssql-server-linux
-
-docker logs -f SQLServer
-
-docker exec -ti SQLServer /opt/mssql-tools/bin/sqlcmd -?
-
-docker exec -ti SQLServer /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P AAmu02+aamu02
-SELECT @@VERSION
-go
-SELECT NAME FROM SYS.DATABASES
-go
+\d usuario;
+SELECT * FROM usuario;
 
 
 
@@ -98,6 +78,7 @@ go
 #--------------------
 docker run --rm --name Php -h php \
 --link MariaDB:mariadb-host \
+--link Postgres:postgres-host \
 -p 800:80 \
 -v $HOME/1uvr3z/loginphp:/var/www \
 -ti izone/alpine:php
@@ -107,6 +88,7 @@ docker run --rm --name Php -h php \
 #-----------
 docker run --rm --name Php -h php \
 --link MariaDB:mariadb-host \
+--link Postgres:postgres-host \
 -p 800:80 \
 -v $HOME/1uvr3z/loginphp:/var/www/html \
 -ti izone/php:ext
